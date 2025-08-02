@@ -26,20 +26,6 @@ public class Student {
         this.gpa = gpa;
     }
 
-    public Student(int id, String name, String major, int year, double gpa) {
-        ValidationUtils.validateString(name, 3, "name");
-        ValidationUtils.validateString(name, "major");
-        validateYear(year);
-        ValidationUtils.validateGpa(gpa);
-
-        this.id = id;
-        this.isIdSet = true;
-        this.name = name;
-        this.major = major;
-        this.year = year;
-        this.gpa = gpa;
-    }
-
     private void validateYear(int year) {
         if (year < 1900 || year > LocalDate.now().getYear()) {
             throw new IllegalArgumentException("Year must be between 1900 and current year.");

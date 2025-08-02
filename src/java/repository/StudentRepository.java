@@ -66,13 +66,16 @@ public class StudentRepository {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                return new Student(
-                        rs.getInt("id"),
+                Student s = new Student(
                         rs.getString("name"),
                         rs.getString("major"),
                         rs.getInt("year"),
                         rs.getDouble("gpa")
                 );
+
+                s.setId(rs.getInt("id"));
+
+                return s;
             } else {
                 throw new StudentNotFoundException(studentId);
             }
@@ -92,13 +95,15 @@ public class StudentRepository {
             List<Student> studentsList = new ArrayList<>();
 
             while (rs.next()) {
-                studentsList.add(new Student(
-                        rs.getInt("id"),
+                Student s = new Student(
                         rs.getString("name"),
                         rs.getString("major"),
                         rs.getInt("year"),
                         rs.getDouble("gpa")
-                ));
+                );
+
+                s.setId(rs.getInt("id"));
+                studentsList.add(s);
             }
 
             if (studentsList.isEmpty()) throw new NoStudentsFoundException();
