@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ValidationUtils {
     public static void validateId(int id) {
@@ -8,7 +9,7 @@ public class ValidationUtils {
     }
 
     public static void validateString(String str, String logName) {
-        if (str == null) throw new NullPointerException(logName + " can not be null.");
+        validateNotNullObject(str, logName);
         if (str.trim().isEmpty()) throw new IllegalArgumentException(logName + " can not be empty strings.");
     }
 
@@ -26,7 +27,11 @@ public class ValidationUtils {
     }
 
     public static void validateObjectList(List<?> list, String logName) {
-        if (list == null) throw new NullPointerException(logName + " list can not be null.");
+        validateNotNullObject(list, logName);
         if (list.isEmpty()) throw new IllegalArgumentException(logName + " list can not be empty.");
+    }
+
+    public static void validateNotNullObject(Object object, String logName) {
+        if (object == null) throw new NullPointerException(logName + " can not be null.");
     }
 }
