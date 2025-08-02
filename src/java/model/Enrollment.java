@@ -25,6 +25,17 @@ public class Enrollment {
         this.date = LocalDate.now();
     }
 
+    public Enrollment(int studentId, int courseId, int grade, LocalDate date) {
+        ValidationUtils.validateId(studentId);
+        ValidationUtils.validateId(courseId);
+        ValidationUtils.validateGrade(grade);
+
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.grade = grade;
+        this.date = date;
+    }
+
     public int getId() {
         return id;
     }
@@ -43,6 +54,10 @@ public class Enrollment {
 
     public int getGrade() {
         return grade;
+    }
+
+    public boolean isIdSet() {
+        return isIdSet;
     }
 
     public void setId(int id) {
