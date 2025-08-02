@@ -41,6 +41,10 @@ public class Course {
         return credits;
     }
 
+    public boolean isIdSet() {
+        return isIdSet;
+    }
+
     public void setId(int id) {
         if (isIdSet) throw new InvalidIdSetException("Course", id);
 
