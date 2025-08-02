@@ -1,7 +1,5 @@
 package utils;
 
-import java.util.List;
-
 public class ValidationUtils {
     public static void validateId(int id) {
         if (id < 0) throw new IllegalArgumentException("id must 0 or positive.");

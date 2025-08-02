@@ -1,6 +1,7 @@
 package model;
 
 import exception.InvalidIdSetException;
+import utils.ValidationUtils;
 
 public class Student {
     private int id;
@@ -19,6 +20,9 @@ public class Student {
 
     public void setId(int id) {
         if (isIdSet) throw new InvalidIdSetException("Student", id);
+
+        ValidationUtils.validateId(id);
+
         this.id = id;
         this.isIdSet = true;
     }
