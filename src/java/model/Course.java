@@ -49,4 +49,19 @@ public class Course {
         this.id = id;
         this.isIdSet = true;
     }
+
+    public void setTitle(String title) {
+        ValidationUtils.validateString(title, "title");
+        this.title = title;
+    }
+
+    public void setDepartment(String department) {
+        ValidationUtils.validateString(department, "department");
+        this.department = department;
+    }
+
+    public void setCredits(int credits) {
+        validateCredits(credits);
+        this.credits = credits;
+    }
 }

@@ -60,4 +60,24 @@ public class Student {
         this.id = id;
         this.isIdSet = true;
     }
+
+    public void setName(String name) {
+        ValidationUtils.validateString(name, 3, "name");
+        this.name = name;
+    }
+
+    public void setMajor(String major) {
+        ValidationUtils.validateString(name, "major");
+        this.major = major;
+    }
+
+    public void setYear(int year) {
+        validateYear(year);
+        this.year = year;
+    }
+
+    public void setGpa(double gpa) {
+        ValidationUtils.validateGpa(gpa);
+        this.gpa = gpa;
+    }
 }
