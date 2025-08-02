@@ -52,6 +52,10 @@ public class Student {
         return gpa;
     }
 
+    public boolean isIdSet() {
+        return isIdSet;
+    }
+
     public void setId(int id) {
         if (isIdSet) throw new InvalidIdSetException("Student", id);
 
