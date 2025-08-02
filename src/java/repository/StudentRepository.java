@@ -9,10 +9,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class StudentRepository {
     public void createStudents(List<Student> students) {
-        ValidationUtils.validateObjectList(students, "students");
+        ValidationUtils.validateCollection(students, "students");
 
         String sqlQuery = "insert into student (name, major, gpa) values (?, ?, ?)";
 

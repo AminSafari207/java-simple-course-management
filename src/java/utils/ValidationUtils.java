@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -26,12 +27,16 @@ public class ValidationUtils {
         if (gpa < 0.0 || gpa > 100.0) throw new IllegalArgumentException("GPA must be between 0.0 and 4.0.");
     }
 
-    public static void validateObjectList(List<?> list, String logName) {
-        validateNotNullObject(list, logName);
-        if (list.isEmpty()) throw new IllegalArgumentException(logName + " list can not be empty.");
-    }
-
     public static void validateNotNullObject(Object object, String logName) {
         if (object == null) throw new NullPointerException(logName + " can not be null.");
+    }
+
+    public static void validateNotEmptyCollection(Collection<?> collection, String logName) {
+        if (collection.isEmpty()) throw new IllegalArgumentException(logName + " can not be empty.");
+    }
+
+    public static void validateCollection(Collection<?> collection, String logName) {
+        validateNotNullObject(collection, logName);
+        validateNotEmptyCollection(collection, logName);
     }
 }
