@@ -42,7 +42,7 @@ public class Course {
     }
 
     public void setId(int id) {
-        if (isIdSet) throw new InvalidIdSetException("Student", id);
+        if (isIdSet) throw new InvalidIdSetException("Course", id);
 
         ValidationUtils.validateId(id);
 
