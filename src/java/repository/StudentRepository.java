@@ -77,7 +77,7 @@ public class StudentRepository {
                 throw new StudentNotFoundException(studentId);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Finding student by id failed.", e);
+            throw new RuntimeException("Finding student by id in database failed.", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class StudentRepository {
 
             return studentsList;
         } catch (SQLException e) {
-            throw new RuntimeException("Finding student by id failed.", e);
+            throw new RuntimeException("Finding all students in database failed.", e);
         }
     }
 
@@ -141,7 +141,23 @@ public class StudentRepository {
             ps.setInt(idIndex, studentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Creating students in database failed!", e);
+            throw new RuntimeException("Updating student in database failed!", e);
+        }
+    }
+
+    public void delete(int studentId) {
+        ValidationUtils.validateId(studentId);
+
+        String sqlQuery = "delete from student where id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sqlQuery)
+        ) {
+            ps.setInt(1, studentId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Deleting student from database failed!", e);
         }
     }
 }
