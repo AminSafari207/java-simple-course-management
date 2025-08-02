@@ -5,15 +5,12 @@ import exception.StudentAlreadyExistsException;
 import model.Student;
 import utils.ValidationUtils;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Collection;
+import java.sql.*;
 import java.util.List;
 import java.util.Map;
 
 public class StudentRepository {
-    private List<String> validUpdateKeys = List.of("name", "major", "gpa");
+    private final List<String> validUpdateKeys = List.of("name", "major", "gpa");
 
     public void createStudents(List<Student> students) {
         ValidationUtils.validateCollection(students, "students");
@@ -22,8 +19,10 @@ public class StudentRepository {
 
         try (
                 Connection conn = DBConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sqlQuery)
+                PreparedStatement ps = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)
                 ) {
+            conn.setAutoCommit(false);
+
             for (Student s: students) {
                 ValidationUtils.validateNotNull(s, "student");
                 if (s.isIdSet()) throw new StudentAlreadyExistsException(s.getName(), s.getId());
@@ -35,6 +34,16 @@ public class StudentRepository {
             };
 
             ps.executeBatch();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                int i = 0;
+
+                while (rs.next()) {
+                    students.get(i++).setId(rs.getInt(1));
+                }
+            }
+
+            conn.commit();
         } catch (SQLException e) {
             throw new RuntimeException("Creating students in database failed!", e);
         }
