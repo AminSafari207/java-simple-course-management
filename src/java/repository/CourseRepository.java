@@ -14,12 +14,12 @@ import java.util.List;
 import java.util.Map;
 
 public class CourseRepository {
-    private final List<String> validUpdateKeys = List.of("name", "major", "gpa");
+    private final List<String> validUpdateKeys = List.of("title", "department", "credits");
 
     public void create(List<Course> courses) {
         ValidationUtils.validateCollection(courses, "courses");
 
-        String sqlQuery = "insert into course (name, major, gpa) values (?, ?, ?)";
+        String sqlQuery = "insert into course (title, department, credits) values (?, ?, ?)";
 
         try (
                 Connection conn = DBConnection.getConnection();
