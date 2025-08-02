@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.List;
+
 public class ValidationUtils {
     public static void validateId(int id) {
         if (id < 0) throw new IllegalArgumentException("id must 0 or positive.");
@@ -21,5 +23,10 @@ public class ValidationUtils {
 
     public static void validateGpa(double gpa) {
         if (gpa < 0.0 || gpa > 100.0) throw new IllegalArgumentException("GPA must be between 0.0 and 4.0.");
+    }
+
+    public static void validateObjectList(List<?> list, String logName) {
+        if (list == null) throw new NullPointerException(logName + " list can not be null.");
+        if (list.isEmpty()) throw new IllegalArgumentException(logName + " list can not be empty.");
     }
 }
