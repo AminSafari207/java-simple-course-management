@@ -8,10 +8,13 @@ import utils.ValidationUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 public class StudentRepository {
+    private List<String> validUpdateKeys = List.of("name", "major", "gpa");
+
     public void createStudents(List<Student> students) {
         ValidationUtils.validateCollection(students, "students");
 
@@ -22,7 +25,7 @@ public class StudentRepository {
                 PreparedStatement ps = conn.prepareStatement(sqlQuery)
                 ) {
             for (Student s: students) {
-                ValidationUtils.validateNotNullObject(s, "student");
+                ValidationUtils.validateNotNull(s, "student");
                 if (s.isIdSet()) throw new StudentAlreadyExistsException(s.getName(), s.getId());
 
                 ps.setString(1, s.getName());
@@ -32,6 +35,42 @@ public class StudentRepository {
             };
 
             ps.executeBatch();
+        } catch (SQLException e) {
+            throw new RuntimeException("Creating students in database failed!", e);
+        }
+    }
+
+    public void updateStudent(int studentId, Map<String, Object> updatesMap) {
+        ValidationUtils.validateId(studentId);
+        ValidationUtils.validateMap(updatesMap, "updatesMap");
+
+        String sqlQuery = "update student set ";
+        int updateCount = 0;
+
+        for (String key: updatesMap.keySet()) {
+            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
+
+            sqlQuery += key + " = ?";
+            updateCount++;
+
+            if (updateCount < updatesMap.size()) sqlQuery += ", ";
+        }
+
+        sqlQuery += "where id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sqlQuery)
+        ) {
+            int idIndex = 1;
+
+            for (String key: updatesMap.keySet()) {
+                Object value = updatesMap.get(key);
+                ps.setObject(idIndex, value);
+            }
+
+            ps.setInt(idIndex, studentId);
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Creating students in database failed!", e);
         }
