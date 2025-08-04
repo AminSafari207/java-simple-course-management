@@ -103,16 +103,11 @@ public class StudentRepository {
         }
     }
 
-    public void update(int studentId, Map<String, Object> updatesMap) {
-        ValidationUtils.validateId(studentId);
-        ValidationUtils.validateMap(updatesMap, "updatesMap");
-
+    public void update(int studentId, Map<String, Object> updatesMap) throws SQLException {
         String sqlQuery = "update student set ";
         int updateCount = 0;
 
         for (String key: updatesMap.keySet()) {
-            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
-
             sqlQuery += key + " = ?";
             updateCount++;
 
@@ -135,7 +130,7 @@ public class StudentRepository {
             ps.setInt(idIndex, studentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Updating student in database failed!", e);
+            throw new SQLException("Updating student in database failed!");
         }
     }
 
