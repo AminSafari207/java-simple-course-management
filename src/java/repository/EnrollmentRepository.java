@@ -103,13 +103,11 @@ public class EnrollmentRepository {
         }
     }
 
-    public void update(int enrollmentId, Map<String, Object> updateMap) {
+    public void update(int enrollmentId, Map<String, Object> updateMap) throws SQLException {
         String sqlQuery = "update enrollment set ";
         int updateCount = 0;
 
         for (String key: updateMap.keySet()) {
-            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
-
             sqlQuery += key + " = ?";
             updateCount++;
 
@@ -132,7 +130,7 @@ public class EnrollmentRepository {
             ps.setInt(idIndex, enrollmentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Updating enrollment in database failed!", e);
+            throw new SQLException("Updating enrollment in database failed!", e);
         }
     }
 

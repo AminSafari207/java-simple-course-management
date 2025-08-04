@@ -32,4 +32,19 @@ public class EnrollmentService {
             throw new RuntimeException("Registering enrollment failed.", e);
         }
     }
+
+    public void updateEnrollment(int enrollmentId, Map<String, Object> updateMap) {
+        ValidationUtils.validateId(enrollmentId);
+        ValidationUtils.validateMap(updateMap, "updateMap");
+
+        for (String key: updateMap.keySet()) {
+            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
+        }
+
+        try {
+            enrollmentRepository.update(enrollmentId, updateMap);
+        } catch (SQLException e) {
+            throw new RuntimeException("Updating enrollment failed.", e);
+        }
+    }
 }
