@@ -47,4 +47,14 @@ public class StudentService {
             throw new RuntimeException("Updating student failed.", e);
         }
     }
+
+    public void removeStudent(int studentId) {
+        ValidationUtils.validateId(studentId);
+
+        try {
+            studentRepository.delete(studentId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Removing student failed.", e);
+        }
+    }
 }
