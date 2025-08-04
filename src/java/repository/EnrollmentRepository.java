@@ -41,9 +41,7 @@ public class EnrollmentRepository {
         }
     }
 
-    public Enrollment findById(int enrollmentId) {
-        ValidationUtils.validateId(enrollmentId);
-
+    public Enrollment findById(int enrollmentId) throws SQLException {
         String sqlQuery = "select * from enrollment where id = ?";
 
         try (
@@ -69,7 +67,7 @@ public class EnrollmentRepository {
                 throw new EnrollmentNotFoundException(enrollmentId);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Finding enrollment by id in database failed.", e);
+            throw new SQLException("Finding enrollment by id in database failed.", e);
         }
     }
 

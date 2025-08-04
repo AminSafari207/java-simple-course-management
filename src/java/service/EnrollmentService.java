@@ -57,4 +57,14 @@ public class EnrollmentService {
             throw new RuntimeException("Removing enrollment failed.", e);
         }
     }
+
+    public Enrollment findEnrollmentById(int enrollmentId) {
+        ValidationUtils.validateId(enrollmentId);
+
+        try {
+            return enrollmentRepository.findById(enrollmentId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Finding enrollment by id failed.", e);
+        }
+    }
 }
