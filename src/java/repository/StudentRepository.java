@@ -67,11 +67,11 @@ public class StudentRepository {
                 throw new StudentNotFoundException(studentId);
             }
         } catch (SQLException e) {
-            throw new SQLException("Finding student by id in database failed.");
+            throw new SQLException("Finding student by id in database failed.", e);
         }
     }
 
-    public List<Student> findAll() {
+    public List<Student> findAll() throws SQLException {
         String sqlQuery = "select * from student";
 
         try (
@@ -97,7 +97,7 @@ public class StudentRepository {
 
             return studentsList;
         } catch (SQLException e) {
-            throw new RuntimeException("Finding all students in database failed.", e);
+            throw new SQLException("Finding all students in database failed.", e);
         }
     }
 
@@ -128,7 +128,7 @@ public class StudentRepository {
             ps.setInt(idIndex, studentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new SQLException("Updating student in database failed!");
+            throw new SQLException("Updating student in database failed!", e);
         }
     }
 
@@ -142,7 +142,7 @@ public class StudentRepository {
             ps.setInt(1, studentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new SQLException("Deleting student from database failed!");
+            throw new SQLException("Deleting student from database failed!", e);
         }
     }
 }

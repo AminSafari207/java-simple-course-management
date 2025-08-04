@@ -68,4 +68,12 @@ public class StudentService {
             throw new RuntimeException("Finding student by id failed.", e);
         }
     }
+
+    public List<Student> findAllStudents() {
+        try {
+            return studentRepository.findAll();
+        } catch (SQLException e) {
+            throw new RuntimeException("Finding all students failed.", e);
+        }
+    }
 }
