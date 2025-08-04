@@ -134,9 +134,7 @@ public class EnrollmentRepository {
         }
     }
 
-    public void delete(int enrollmentId) {
-        ValidationUtils.validateId(enrollmentId);
-
+    public void delete(int enrollmentId) throws SQLException {
         String sqlQuery = "delete from enrollment where id = ?";
 
         try (
@@ -146,7 +144,7 @@ public class EnrollmentRepository {
             ps.setInt(1, enrollmentId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Deleting enrollment from database failed!", e);
+            throw new SQLException("Deleting enrollment from database failed!", e);
         }
     }
 }

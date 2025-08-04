@@ -47,4 +47,14 @@ public class EnrollmentService {
             throw new RuntimeException("Updating enrollment failed.", e);
         }
     }
+
+    public void removeEnrollment(int enrollmentId) {
+        ValidationUtils.validateId(enrollmentId);
+
+        try {
+            enrollmentRepository.delete(enrollmentId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Removing enrollment failed.", e);
+        }
+    }
 }
