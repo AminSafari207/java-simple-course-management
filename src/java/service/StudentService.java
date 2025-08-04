@@ -63,7 +63,7 @@ public class StudentService {
         ValidationUtils.validateId(studentId);
 
         try {
-            studentRepository.findById(studentId);
+            return studentRepository.findById(studentId);
         } catch (SQLException e) {
             throw new RuntimeException("Finding student by id failed.", e);
         }
