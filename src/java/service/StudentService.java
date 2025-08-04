@@ -7,9 +7,12 @@ import utils.ValidationUtils;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 public class StudentService {
-    StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+
+    private final List<String> validUpdateKeys = List.of("name", "major", "gpa");
 
     public StudentService() {
         studentRepository = new StudentRepository();
@@ -27,6 +30,21 @@ public class StudentService {
             studentRepository.create(studentList);
         } catch (SQLException e) {
             throw new RuntimeException("Registering students failed.", e);
+        }
+    }
+
+    public void updateStudent(int studentId, Map<String, Object> updateMap) {
+        ValidationUtils.validateId(studentId);
+        ValidationUtils.validateMap(updateMap, "updateMap");
+
+        for (String key: updateMap.keySet()) {
+            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
+        }
+
+        try {
+            studentRepository.update(studentId, updateMap);
+        } catch (SQLException e) {
+            throw new RuntimeException("Updating student failed.", e);
         }
     }
 }
