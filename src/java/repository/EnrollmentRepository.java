@@ -15,23 +15,14 @@ import java.util.List;
 import java.util.Map;
 
 public class EnrollmentRepository {
-    private final List<String> validUpdateKeys = List.of("grade");
-
-    public void create(List<Enrollment> enrollments) {
-        ValidationUtils.validateCollection(enrollments, "enrollments");
-
+    public void create(List<Enrollment> enrollmentList) throws SQLException {
         String sqlQuery = "insert into enrollment (student_id, course_id, enrollment_date, credits) values (?, ?, ?, ?)";
 
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)
         ) {
-            conn.setAutoCommit(false);
-
-            for (Enrollment enrollment: enrollments) {
-                ValidationUtils.validateNotNull(enrollment, "enrollment");
-                if (enrollment.isIdSet()) throw new EnrollmentAlreadyExistsException("Enrollment with ID '" + enrollment.getId() + "' already exists.");
-
+            for (Enrollment enrollment: enrollmentList) {
                 ps.setInt(1, enrollment.getStudentId());
                 ps.setInt(2, enrollment.getCourseId());
                 ps.setDate(3, Date.valueOf(enrollment.getDate()));
@@ -44,13 +35,9 @@ public class EnrollmentRepository {
             ResultSet rs = ps.getGeneratedKeys();
             int i = 0;
 
-            while (rs.next()) {
-                enrollments.get(i++).setId(rs.getInt(1));
-            }
-
-            conn.commit();
+            while (rs.next()) enrollmentList.get(i++).setId(rs.getInt(1));
         } catch (SQLException e) {
-            throw new RuntimeException("Creating enrollments in database failed!", e);
+            throw new SQLException("Creating enrollments in database failed!", e);
         }
     }
 
@@ -116,20 +103,17 @@ public class EnrollmentRepository {
         }
     }
 
-    public void update(int enrollmentId, Map<String, Object> updatesMap) {
-        ValidationUtils.validateId(enrollmentId);
-        ValidationUtils.validateMap(updatesMap, "updatesMap");
-
+    public void update(int enrollmentId, Map<String, Object> updateMap) {
         String sqlQuery = "update enrollment set ";
         int updateCount = 0;
 
-        for (String key: updatesMap.keySet()) {
+        for (String key: updateMap.keySet()) {
             if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
 
             sqlQuery += key + " = ?";
             updateCount++;
 
-            if (updateCount < updatesMap.size()) sqlQuery += ", ";
+            if (updateCount < updateMap.size()) sqlQuery += ", ";
         }
 
         sqlQuery += "where id = ?";
@@ -140,8 +124,8 @@ public class EnrollmentRepository {
         ) {
             int idIndex = 1;
 
-            for (String key: updatesMap.keySet()) {
-                Object value = updatesMap.get(key);
+            for (String key: updateMap.keySet()) {
+                Object value = updateMap.get(key);
                 ps.setObject(idIndex, value);
             }
 
