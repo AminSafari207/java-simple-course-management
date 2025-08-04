@@ -41,9 +41,7 @@ public class StudentRepository {
         }
     }
 
-    public Student findById(int studentId) {
-        ValidationUtils.validateId(studentId);
-
+    public Student findById(int studentId) throws SQLException {
         String sqlQuery = "select * from student where id = ?";
 
         try (
@@ -69,7 +67,7 @@ public class StudentRepository {
                 throw new StudentNotFoundException(studentId);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Finding student by id in database failed.", e);
+            throw new SQLException("Finding student by id in database failed.");
         }
     }
 

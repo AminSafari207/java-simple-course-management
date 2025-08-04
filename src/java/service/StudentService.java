@@ -1,6 +1,7 @@
 package service;
 
 import exception.StudentAlreadyExistsException;
+import exception.StudentNotFoundException;
 import model.Student;
 import repository.StudentRepository;
 import utils.ValidationUtils;
@@ -55,6 +56,16 @@ public class StudentService {
             studentRepository.delete(studentId);
         } catch (SQLException e) {
             throw new RuntimeException("Removing student failed.", e);
+        }
+    }
+
+    public Student findStudentById(int studentId) {
+        ValidationUtils.validateId(studentId);
+
+        try {
+            studentRepository.findById(studentId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Finding student by id failed.", e);
         }
     }
 }
