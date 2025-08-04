@@ -58,6 +58,17 @@ public class EnrollmentService {
         }
     }
 
+    public Enrollment findEnrollment(int studentId, int courseId) {
+        ValidationUtils.validateId(studentId);
+        ValidationUtils.validateId(courseId);
+
+        try {
+            return enrollmentRepository.find(studentId, courseId);
+        } catch (SQLException e) {
+            throw new RuntimeException("Finding enrollment by student id and course id failed.", e);
+        }
+    }
+
     public Enrollment findEnrollmentById(int enrollmentId) {
         ValidationUtils.validateId(enrollmentId);
 
