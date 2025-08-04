@@ -15,21 +15,14 @@ import java.util.Map;
 public class StudentRepository {
     private final List<String> validUpdateKeys = List.of("name", "major", "gpa");
 
-    public void create(List<Student> students) {
-        ValidationUtils.validateCollection(students, "students");
-
+    public void create(List<Student> students) throws SQLException {
         String sqlQuery = "insert into student (name, major, gpa) values (?, ?, ?)";
 
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)
         ) {
-            conn.setAutoCommit(false);
-
             for (Student s: students) {
-                ValidationUtils.validateNotNull(s, "student");
-                if (s.isIdSet()) throw new StudentAlreadyExistsException(s.getName(), s.getId());
-
                 ps.setString(1, s.getName());
                 ps.setString(2, s.getMajor());
                 ps.setInt(3, s.getYear());
@@ -42,13 +35,9 @@ public class StudentRepository {
             ResultSet rs = ps.getGeneratedKeys();
             int i = 0;
 
-            while (rs.next()) {
-                students.get(i++).setId(rs.getInt(1));
-            }
-
-            conn.commit();
+            while (rs.next()) students.get(i++).setId(rs.getInt(1));
         } catch (SQLException e) {
-            throw new RuntimeException("Creating students in database failed!", e);
+            throw new SQLException("Creating students in database failed!");
         }
     }
 
