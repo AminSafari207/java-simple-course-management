@@ -71,7 +71,7 @@ public class EnrollmentRepository {
         }
     }
 
-    public List<Enrollment> findAll() {
+    public List<Enrollment> findAll() throws SQLException {
         String sqlQuery = "select * from enrollment";
 
         try (
@@ -97,7 +97,7 @@ public class EnrollmentRepository {
 
             return enrollmentsList;
         } catch (SQLException e) {
-            throw new RuntimeException("Finding all enrollments in database failed.", e);
+            throw new SQLException("Finding all enrollments in database failed.", e);
         }
     }
 

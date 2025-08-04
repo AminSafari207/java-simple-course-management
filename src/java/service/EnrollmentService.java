@@ -67,4 +67,12 @@ public class EnrollmentService {
             throw new RuntimeException("Finding enrollment by id failed.", e);
         }
     }
+
+    public List<Enrollment> findAllEnrollments() {
+        try {
+            return enrollmentRepository.findAll();
+        } catch (SQLException e) {
+            throw new RuntimeException("Finding all enrollments failed.", e);
+        }
+    }
 }
