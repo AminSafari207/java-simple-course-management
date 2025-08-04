@@ -16,21 +16,14 @@ import java.util.Map;
 public class CourseRepository {
     private final List<String> validUpdateKeys = List.of("title", "department", "credits");
 
-    public void create(List<Course> courses) {
-        ValidationUtils.validateCollection(courses, "courses");
-
+    public void create(List<Course> courses) throws SQLException {
         String sqlQuery = "insert into course (title, department, credits) values (?, ?, ?)";
 
         try (
                 Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS)
         ) {
-            conn.setAutoCommit(false);
-
             for (Course course: courses) {
-                ValidationUtils.validateNotNull(course, "course");
-                if (course.isIdSet()) throw new CourseAlreadyExistsException(course.getTitle(), course.getId());
-
                 ps.setString(1, course.getTitle());
                 ps.setString(2, course.getDepartment());
                 ps.setInt(3, course.getCredits());
@@ -45,16 +38,12 @@ public class CourseRepository {
             while (rs.next()) {
                 courses.get(i++).setId(rs.getInt(1));
             }
-
-            conn.commit();
         } catch (SQLException e) {
-            throw new RuntimeException("Creating courses in database failed!", e);
+            throw new SQLException("Creating courses in database failed!", e);
         }
     }
 
-    public Course findById(int courseId) {
-        ValidationUtils.validateId(courseId);
-
+    public Course findById(int courseId) throws SQLException {
         String sqlQuery = "select * from course where id = ?";
 
         try (
@@ -79,11 +68,11 @@ public class CourseRepository {
                 throw new CourseNotFoundException(courseId);
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Finding course by id in database failed.", e);
+            throw new SQLException("Finding course by id in database failed.", e);
         }
     }
 
-    public List<Course> findAll() {
+    public List<Course> findAll() throws SQLException {
         String sqlQuery = "select * from course";
 
         try (
@@ -108,24 +97,19 @@ public class CourseRepository {
 
             return coursesList;
         } catch (SQLException e) {
-            throw new RuntimeException("Finding all courses in database failed.", e);
+            throw new SQLException("Finding all courses in database failed.", e);
         }
     }
 
-    public void update(int courseId, Map<String, Object> updatesMap) {
-        ValidationUtils.validateId(courseId);
-        ValidationUtils.validateMap(updatesMap, "updatesMap");
-
+    public void update(int courseId, Map<String, Object> updateMap) throws SQLException {
         String sqlQuery = "update course set ";
         int updateCount = 0;
 
-        for (String key: updatesMap.keySet()) {
-            if (!validUpdateKeys.contains(key)) throw new IllegalArgumentException("Key '" + key + "' is not valid.");
-
+        for (String key: updateMap.keySet()) {
             sqlQuery += key + " = ?";
             updateCount++;
 
-            if (updateCount < updatesMap.size()) sqlQuery += ", ";
+            if (updateCount < updateMap.size()) sqlQuery += ", ";
         }
 
         sqlQuery += "where id = ?";
@@ -136,21 +120,19 @@ public class CourseRepository {
         ) {
             int idIndex = 1;
 
-            for (String key: updatesMap.keySet()) {
-                Object value = updatesMap.get(key);
+            for (String key: updateMap.keySet()) {
+                Object value = updateMap.get(key);
                 ps.setObject(idIndex, value);
             }
 
             ps.setInt(idIndex, courseId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Updating course in database failed!", e);
+            throw new SQLException("Updating course in database failed!", e);
         }
     }
 
-    public void delete(int courseId) {
-        ValidationUtils.validateId(courseId);
-
+    public void delete(int courseId) throws SQLException {
         String sqlQuery = "delete from course where id = ?";
 
         try (
@@ -160,7 +142,7 @@ public class CourseRepository {
             ps.setInt(1, courseId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Deleting course from database failed!", e);
+            throw new SQLException("Deleting course from database failed!", e);
         }
     }
 }
