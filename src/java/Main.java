@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -34,14 +35,20 @@ public class Main {
 
         enrollmentService.registerEnrollment(enrollments);
 
-        List<Student> filteredStudents = studentService.findAndFilterStudents(s -> s.getGpa() > 3.5);
-        long studentsCount = studentService.countStudents(s -> LocalDate.now().getYear() - s.getYear() > 24);
+//        List<Student> filteredStudents = studentService.findAndFilterStudents(s -> s.getGpa() > 3.5);
+//        long studentsCount = studentService.countStudents(s -> LocalDate.now().getYear() - s.getYear() > 24);
 
 //        PrintUtils.printList(filteredStudents, "Students GPA > 3.5");
 //        System.out.println("Students older than 24 years old count: " + studentsCount);
 //        printStudentsByGpaAndDepartment(3.5, "Computer Science");
 //        printStudentsByCourseIdAfterDate(4);
-        printCoursesWithAverageHigherThan(85);
+//        printCoursesWithAverageHigherThan(85);
+//        printStudentsNameInUppercase(s -> {
+//            System.out.println();
+//            System.out.println(s.getName().toUpperCase());
+//            System.out.println();
+//            System.out.println("-----------------");
+//        });
 
     }
 
@@ -148,5 +155,13 @@ public class Main {
                         System.out.println();
                     }
                 });
+    }
+
+    public static void printStudentsNameInUppercase(Consumer<Student> consumer) {
+        List<Student> students = studentService.findAllStudents();
+
+        students
+                .stream()
+                .forEach(consumer);
     }
 }
