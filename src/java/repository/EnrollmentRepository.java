@@ -1,15 +1,9 @@
 package repository;
 
 import config.DBConnection;
-import exception.EnrollmentAlreadyExistsException;
-import exception.EnrollmentNotFoundException;
-import exception.NoEnrollmentsFoundException;
 import model.Enrollment;
-import utils.ValidationUtils;
 
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

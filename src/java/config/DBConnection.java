@@ -14,7 +14,7 @@ public class DBConnection {
         config.setJdbcUrl("jdbc:postgresql://localhost:5432/student_course_management");
         config.setUsername("postgres");
         config.setPassword("postgrace");
-        config.setMaximumPoolSize(5);
+        config.setMaximumPoolSize(10);
         config.setConnectionTimeout(10000);
         config.setIdleTimeout(60000);
 
