@@ -68,4 +68,9 @@ public class Course {
         validateCredits(credits);
         this.credits = credits;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + "\nTitle: " + title + "\nDepartment: " + department + "\nCredits: ";
+    }
 }

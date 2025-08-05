@@ -84,4 +84,9 @@ public class Student {
         ValidationUtils.validateGpa(gpa);
         this.gpa = gpa;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + "\nName: " + name + "\nMajor: " + major + "\nYear: " + year;
+    }
 }

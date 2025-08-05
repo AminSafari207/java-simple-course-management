@@ -87,4 +87,9 @@ public class Enrollment {
         ValidationUtils.validateGrade(grade);
         this.grade = grade;
     }
+
+    @Override
+    public String toString() {
+        return "ID: " + id + "\nStudent: " + studentId + "\nCourse: " + courseId + "\nDate: " + date + "\nGrade: " + grade;
+    }
 }
