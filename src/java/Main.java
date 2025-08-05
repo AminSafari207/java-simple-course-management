@@ -9,7 +9,10 @@ import utils.SqlUtils;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -37,7 +40,8 @@ public class Main {
 //        PrintUtils.printList(filteredStudents, "Students GPA > 3.5");
 //        System.out.println("Students older than 24 years old count: " + studentsCount);
 //        printStudentsByGpaAndDepartment(3.5, "Computer Science");
-        printStudentsByCourseIdAfterDate(4);
+//        printStudentsByCourseIdAfterDate(4);
+        printCoursesWithAverageHigherThan(85);
 
     }
 
@@ -104,5 +108,45 @@ public class Main {
         );
 
         PrintUtils.printList(students, "Students by course id after date");
+    }
+
+    public static void printCoursesWithAverageHigherThan(double minAvg) {
+        List<Course> courses = courseService.findAllCourses();
+        List<Enrollment> enrollments = new EnrollmentService().findAllEnrollments();
+
+        Map<Integer, List<Integer>> courseIdWithGrades = new HashMap<>();
+
+        for (Enrollment enrollment: enrollments) {
+            int courseId = enrollment.getId();
+            int grade = enrollment.getGrade();
+
+            if (!courseIdWithGrades.containsKey(courseId)) {
+                courseIdWithGrades.put(courseId, new ArrayList<>());
+            }
+
+            courseIdWithGrades.get(courseId).add(grade);
+        }
+
+        System.out.println("-------------------------");
+        System.out.println();
+
+        courses
+                .stream()
+                .forEach(course -> {
+                    List<Integer> gradeList = courseIdWithGrades.get(course.getId());
+
+                    double avg = gradeList
+                            .stream()
+                            .mapToInt(Integer::intValue)
+                            .average()
+                            .orElse(0);
+
+                    if (avg > minAvg) {
+                        System.out.println(course.toString() + "\nAverage Grade: " + avg);
+                        System.out.println();
+                        System.out.println("-------------------------");
+                        System.out.println();
+                    }
+                });
     }
 }
