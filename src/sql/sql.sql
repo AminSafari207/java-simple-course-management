@@ -4,6 +4,7 @@ create table student (
     id serial primary key,
     name varchar,
     major varchar,
+    year int,
     gpa decimal
 );
 

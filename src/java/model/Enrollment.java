@@ -75,7 +75,7 @@ public class Enrollment {
     }
 
     public void setCourseId(int courseId) {
-        ValidationUtils.validateId(studentId);
+        ValidationUtils.validateId(courseId);
         this.courseId = courseId;
     }
 

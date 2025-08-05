@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public class EnrollmentRepository {
     public void create(List<Enrollment> enrollmentList) throws SQLException {
-        String sqlQuery = "insert into enrollment (student_id, course_id, enrollment_date, credits) values (?, ?, ?, ?)";
+        String sqlQuery = "insert into enrollment (student_id, course_id, enrollment_date, grade) values (?, ?, ?, ?)";
 
         try (
                 Connection conn = DBConnection.getConnection();
@@ -154,7 +154,7 @@ public class EnrollmentRepository {
 
             for (String key: updateMap.keySet()) {
                 Object value = updateMap.get(key);
-                ps.setObject(idIndex, value);
+                ps.setObject(idIndex++, value);
             }
 
             ps.setInt(idIndex, enrollmentId);

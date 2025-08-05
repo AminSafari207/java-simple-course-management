@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class CourseRepository {
-    private final List<String> validUpdateKeys = List.of("title", "department", "credits");
-
     public void create(List<Course> courses) throws SQLException {
         String sqlQuery = "insert into course (title, department, credits) values (?, ?, ?)";
 
@@ -123,7 +121,7 @@ public class CourseRepository {
 
             for (String key: updateMap.keySet()) {
                 Object value = updateMap.get(key);
-                ps.setObject(idIndex, value);
+                ps.setObject(idIndex++, value);
             }
 
             ps.setInt(idIndex, courseId);
