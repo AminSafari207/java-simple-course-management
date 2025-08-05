@@ -11,6 +11,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class StudentRepository {
     private final List<String> validUpdateKeys = List.of("name", "major", "gpa");
@@ -41,7 +42,7 @@ public class StudentRepository {
         }
     }
 
-    public Student findById(int studentId) throws SQLException {
+    public Optional<Student> findById(int studentId) throws SQLException {
         String sqlQuery = "select * from student where id = ?";
 
         try (
@@ -62,16 +63,16 @@ public class StudentRepository {
 
                 s.setId(rs.getInt("id"));
 
-                return s;
+                return Optional.of(s);
             } else {
-                throw new StudentNotFoundException(studentId);
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new SQLException("Finding student by id in database failed.", e);
         }
     }
 
-    public List<Student> findAll() throws SQLException {
+    public Optional<List<Student>> findAll() throws SQLException {
         String sqlQuery = "select * from student";
 
         try (
@@ -93,9 +94,9 @@ public class StudentRepository {
                 studentsList.add(s);
             }
 
-            if (studentsList.isEmpty()) throw new NoStudentsFoundException();
+            if (studentsList.isEmpty()) return Optional.empty();
 
-            return studentsList;
+            return Optional.of(studentsList);
         } catch (SQLException e) {
             throw new SQLException("Finding all students in database failed.", e);
         }

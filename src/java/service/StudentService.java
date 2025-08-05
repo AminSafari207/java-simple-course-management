@@ -1,5 +1,6 @@
 package service;
 
+import exception.NoStudentsFoundException;
 import exception.StudentAlreadyExistsException;
 import exception.StudentNotFoundException;
 import model.Student;
@@ -63,7 +64,8 @@ public class StudentService {
         ValidationUtils.validateId(studentId);
 
         try {
-            return studentRepository.findById(studentId);
+            return studentRepository.findById(studentId)
+                    .orElseThrow(() -> new StudentNotFoundException(studentId));
         } catch (SQLException e) {
             throw new RuntimeException("Finding student by id failed.", e);
         }
@@ -71,7 +73,8 @@ public class StudentService {
 
     public List<Student> findAllStudents() {
         try {
-            return studentRepository.findAll();
+            return studentRepository.findAll()
+                    .orElseThrow(() -> new NoStudentsFoundException());
         } catch (SQLException e) {
             throw new RuntimeException("Finding all students failed.", e);
         }
