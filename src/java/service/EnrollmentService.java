@@ -2,6 +2,7 @@ package service;
 
 import exception.EnrollmentAlreadyExistsException;
 import exception.EnrollmentNotFoundException;
+import exception.NoEnrollmentsFoundException;
 import model.Enrollment;
 import repository.EnrollmentRepository;
 import utils.ValidationUtils;
@@ -83,7 +84,8 @@ public class EnrollmentService {
 
     public List<Enrollment> findAllEnrollments() {
         try {
-            return enrollmentRepository.findAll();
+            return enrollmentRepository.findAll()
+                    .orElseThrow(() -> new NoEnrollmentsFoundException());
         } catch (SQLException e) {
             throw new RuntimeException("Finding all enrollments failed.", e);
         }

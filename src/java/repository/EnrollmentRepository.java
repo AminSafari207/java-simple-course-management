@@ -103,7 +103,7 @@ public class EnrollmentRepository {
         }
     }
 
-    public List<Enrollment> findAll() throws SQLException {
+    public Optional<List<Enrollment>> findAll() throws SQLException {
         String sqlQuery = "select * from enrollment";
 
         try (
@@ -125,9 +125,9 @@ public class EnrollmentRepository {
                 enrollmentsList.add(enrollment);
             }
 
-            if (enrollmentsList.isEmpty()) throw new NoEnrollmentsFoundException();
+            if (enrollmentsList.isEmpty()) return Optional.empty();
 
-            return enrollmentsList;
+            return Optional.of(enrollmentsList);
         } catch (SQLException e) {
             throw new SQLException("Finding all enrollments in database failed.", e);
         }
