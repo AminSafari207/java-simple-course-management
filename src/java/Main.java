@@ -4,19 +4,21 @@ import model.Enrollment;
 import service.CourseService;
 import service.EnrollmentService;
 import service.StudentService;
+import utils.PrintUtils;
 import utils.SqlUtils;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Supplier;
 
 public class Main {
+    private static StudentService studentService = new StudentService();
+    private static CourseService courseService = new CourseService();
+    private static EnrollmentService enrollmentService = new EnrollmentService();
+
     public static void main(String[] args) {
         SqlUtils.truncateTables("student", "course", "enrollment");
-
-        StudentService studentService = new StudentService();
-        CourseService courseService = new CourseService();
-        EnrollmentService enrollmentService = new EnrollmentService();
 
         List<Student> students = buildStudentList();
         List<Course> courses = buildCourseList();
@@ -27,6 +29,13 @@ public class Main {
         List<Enrollment> enrollments = buildEnrollmentList(students, courses);
 
         enrollmentService.registerEnrollment(enrollments);
+
+        List<Student> filteredStudents = studentService.findAndFilterStudents(s -> s.getGpa() > 3.5);
+        long studentsCount = studentService.countStudents(s -> LocalDate.now().getYear() - s.getYear() > 24);
+
+//        PrintUtils.printList(filteredStudents, "Students GPA > 3.5");
+//        System.out.println("Students older than 24 years old count: " + studentsCount);
+        printStudentsByGpaAndDepartment(3.5, "Computer Science");
 
 
     }
@@ -74,5 +83,15 @@ public class Main {
                 new Enrollment(students.get(3).getId(), courses.get(4).getId(), 91),
                 new Enrollment(students.get(4).getId(), courses.get(0).getId(), 85)
         );
+    }
+
+    public static void printStudentsByGpaAndDepartment(double gpa, String department) {
+        List<Integer> studentIdsByDepartment = enrollmentService.getStudentIdsByDepartment(department);
+
+        List<Student> students = studentService.findAndFilterStudents(student ->
+                student.getGpa() > gpa && studentIdsByDepartment.contains(student.getId())
+        );
+
+        PrintUtils.printList(students, "Students by gpa and department");
     }
 }

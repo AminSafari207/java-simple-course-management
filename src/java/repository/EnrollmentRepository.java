@@ -2,6 +2,7 @@ package repository;
 
 import config.DBConnection;
 import model.Enrollment;
+import utils.ValidationUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class EnrollmentRepository {
                         rs.getInt("student_id"),
                         rs.getInt("course_id"),
                         rs.getInt("grade"),
-                        rs.getDate("date").toLocalDate()
+                        rs.getDate("enrollment_date").toLocalDate()
                 );
 
                 enrollment.setId(rs.getInt("id"));
