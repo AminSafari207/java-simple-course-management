@@ -2,6 +2,7 @@ package service;
 
 import exception.CourseAlreadyExistsException;
 import exception.CourseNotFoundException;
+import exception.NoCoursesFoundException;
 import model.Course;
 import repository.CourseRepository;
 import utils.ValidationUtils;
@@ -63,7 +64,8 @@ public class CourseService {
         ValidationUtils.validateId(courseId);
 
         try {
-            return courseRepository.findById(courseId);
+            return courseRepository.findById(courseId)
+                    .orElseThrow(() -> new CourseNotFoundException(courseId));
         } catch (SQLException e) {
             throw new RuntimeException("Finding course by id failed.", e);
         }
@@ -71,7 +73,8 @@ public class CourseService {
 
     public List<Course> findAllCourses() {
         try {
-            return courseRepository.findAll();
+            return courseRepository.findAll()
+                    .orElseThrow(() -> new NoCoursesFoundException());
         } catch (SQLException e) {
             throw new RuntimeException("Finding all courses failed.", e);
         }
