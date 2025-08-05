@@ -10,6 +10,7 @@ import utils.SqlUtils;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class Main {
@@ -35,8 +36,8 @@ public class Main {
 
 //        PrintUtils.printList(filteredStudents, "Students GPA > 3.5");
 //        System.out.println("Students older than 24 years old count: " + studentsCount);
-        printStudentsByGpaAndDepartment(3.5, "Computer Science");
-
+//        printStudentsByGpaAndDepartment(3.5, "Computer Science");
+        printStudentsByCourseIdAfterDate(4);
 
     }
 
@@ -88,10 +89,20 @@ public class Main {
     public static void printStudentsByGpaAndDepartment(double gpa, String department) {
         List<Integer> studentIdsByDepartment = enrollmentService.getStudentIdsByDepartment(department);
 
-        List<Student> students = studentService.findAndFilterStudents(student ->
-                student.getGpa() > gpa && studentIdsByDepartment.contains(student.getId())
+        List<Student> students = studentService.findAndFilterStudents(
+                student -> student.getGpa() > gpa && studentIdsByDepartment.contains(student.getId())
         );
 
         PrintUtils.printList(students, "Students by gpa and department");
+    }
+
+    public static void printStudentsByCourseIdAfterDate(int courseId) {
+        LocalDate date = LocalDate.of(2024, 1, 1);
+
+        List<Student> students = enrollmentService.findStudentsByEnrollment(
+                enrollment -> enrollment.getCourseId() == courseId && enrollment.getDate().isAfter(date)
+        );
+
+        PrintUtils.printList(students, "Students by course id after date");
     }
 }

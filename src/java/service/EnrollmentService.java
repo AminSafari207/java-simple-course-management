@@ -5,6 +5,7 @@ import exception.EnrollmentNotFoundException;
 import exception.NoEnrollmentsFoundException;
 import model.Course;
 import model.Enrollment;
+import model.Student;
 import repository.EnrollmentRepository;
 import utils.ValidationUtils;
 
@@ -12,6 +13,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class EnrollmentService {
@@ -96,20 +98,35 @@ public class EnrollmentService {
     }
 
     public List<Integer> getStudentIdsByDepartment(String department) {
-        List<Enrollment> allEnrollments = findAllEnrollments();
-        List<Course> allCourse = new CourseService().findAllCourses();
+        List<Enrollment> enrollments = findAllEnrollments();
+        List<Course> courses = new CourseService().findAllCourses();
 
-        Set<Integer> courseIdByDepartmentSet = allCourse
+        Set<Integer> courseIdByDepartmentSet = courses
                 .stream()
                 .filter(course -> course.getDepartment().equals(department))
                 .map(Course::getId)
                 .collect(Collectors.toSet());
 
-        return allEnrollments
+        return enrollments
                 .stream()
                 .filter(enrollment -> courseIdByDepartmentSet.contains(enrollment.getCourseId()))
                 .map(Enrollment::getStudentId)
                 .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Student> findStudentsByEnrollment(Predicate<Enrollment> filter) {
+        List<Enrollment> enrollments = findAllEnrollments();
+        List<Integer> studentIdList = enrollments
+                .stream()
+                .filter(filter)
+                .map(Enrollment::getStudentId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        return new StudentService().findAllStudents()
+                .stream()
+                .filter(student -> studentIdList.contains(student.getId()))
                 .collect(Collectors.toList());
     }
 }
