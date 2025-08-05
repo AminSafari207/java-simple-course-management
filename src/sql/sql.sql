@@ -20,6 +20,8 @@ create table enrollment (
     student_id int references student(id),
     course_id int references course(id),
     enrollment_date date,
-    grade int
+    grade int,
+
+    unique (student_id, course_id)
 );
 
