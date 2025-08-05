@@ -3,13 +3,17 @@ package service;
 import exception.NoStudentsFoundException;
 import exception.StudentAlreadyExistsException;
 import exception.StudentNotFoundException;
+import interfaces.StudentFilter;
 import model.Student;
 import repository.StudentRepository;
 import utils.ValidationUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class StudentService {
     private final StudentRepository studentRepository;
@@ -78,5 +82,19 @@ public class StudentService {
         } catch (SQLException e) {
             throw new RuntimeException("Finding all students failed.", e);
         }
+    }
+
+    public List<Student> findAndFilterStudents(StudentFilter filter) {
+        return findAllStudents()
+                .stream()
+                .filter(filter::matches)
+                .collect(Collectors.toList());
+    }
+
+    public long countStudents(Predicate<Student> predicate) {
+        return findAllStudents()
+                .stream()
+                .filter(predicate)
+                .count();
     }
 }
