@@ -13,6 +13,7 @@ import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EnrollmentRepository {
     public void create(List<Enrollment> enrollmentList) throws SQLException {
@@ -38,6 +39,37 @@ public class EnrollmentRepository {
             while (rs.next()) enrollmentList.get(i++).setId(rs.getInt(1));
         } catch (SQLException e) {
             throw new SQLException("Creating enrollments in database failed!", e);
+        }
+    }
+
+    public Optional<Enrollment> find(int studentId, int courseId) throws SQLException {
+        String sqlQuery = "select * from enrollment where student_id = ? and course_id = ?";
+
+        try (
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sqlQuery)
+                ){
+            ps.setInt(1, studentId);
+            ps.setInt(2, courseId);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Enrollment enrollment = new Enrollment(
+                        studentId,
+                        courseId,
+                        rs.getInt("grade"),
+                        rs.getDate("date").toLocalDate()
+                );
+
+                enrollment.setId(rs.getInt("id"));
+
+                return Optional.of(enrollment);
+            } else {
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Finding enrollment by student id and course id in database failed.", e);
         }
     }
 

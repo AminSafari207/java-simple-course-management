@@ -1,6 +1,7 @@
 package service;
 
 import exception.EnrollmentAlreadyExistsException;
+import exception.EnrollmentNotFoundException;
 import model.Enrollment;
 import repository.EnrollmentRepository;
 import utils.ValidationUtils;
@@ -63,7 +64,8 @@ public class EnrollmentService {
         ValidationUtils.validateId(courseId);
 
         try {
-            return enrollmentRepository.find(studentId, courseId);
+            return enrollmentRepository.find(studentId, courseId)
+                    .orElseThrow(() -> new EnrollmentNotFoundException(studentId, courseId));
         } catch (SQLException e) {
             throw new RuntimeException("Finding enrollment by student id and course id failed.", e);
         }
