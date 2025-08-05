@@ -73,7 +73,7 @@ public class EnrollmentRepository {
         }
     }
 
-    public Enrollment findById(int enrollmentId) throws SQLException {
+    public Optional<Enrollment> findById(int enrollmentId) throws SQLException {
         String sqlQuery = "select * from enrollment where id = ?";
 
         try (
@@ -94,9 +94,9 @@ public class EnrollmentRepository {
 
                 enrollment.setId(rs.getInt("id"));
 
-                return enrollment;
+                return Optional.of(enrollment);
             } else {
-                throw new EnrollmentNotFoundException(enrollmentId);
+                return Optional.empty();
             }
         } catch (SQLException e) {
             throw new SQLException("Finding enrollment by id in database failed.", e);

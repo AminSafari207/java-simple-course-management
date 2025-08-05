@@ -76,7 +76,8 @@ public class EnrollmentService {
         ValidationUtils.validateId(enrollmentId);
 
         try {
-            return enrollmentRepository.findById(enrollmentId);
+            return enrollmentRepository.findById(enrollmentId)
+                    .orElseThrow(() -> new EnrollmentNotFoundException(enrollmentId)) ;
         } catch (SQLException e) {
             throw new RuntimeException("Finding enrollment by id failed.", e);
         }
